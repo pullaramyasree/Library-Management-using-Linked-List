@@ -7,3 +7,5 @@ When the program starts, a set of default books are initialized. Students can is
 The system provides a menu-driven interface that repeatedly allows the user to issue, return, or view student details until they choose to exit.
 
 <img width="827" height="712" alt="Image" src="https://github.com/user-attachments/assets/229239cd-52c0-4de7-a0ef-2f3671739c45" />
+
+<img width="767" height="815" alt="Image" src="https://github.com/user-attachments/assets/10f3fe03-3033-4603-b713-4a46897bba3e" />
