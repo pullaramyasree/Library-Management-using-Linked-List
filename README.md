@@ -6,4 +6,4 @@ When the program starts, a set of default books are initialized. Students can is
 
 The system provides a menu-driven interface that repeatedly allows the user to issue, return, or view student details until they choose to exit.
 
-https://github.com/pullaramyasree/Library-Management-using-Linked-List/issues/new
+<img width="827" height="712" alt="Image" src="https://github.com/user-attachments/assets/229239cd-52c0-4de7-a0ef-2f3671739c45" />
