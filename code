@@ -1,64 +1,84 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+//////////////////////////////////////////////////////////
+//                      Book Class                      //
+//////////////////////////////////////////////////////////
 class Book 
 {
-    public:
-    	string name;
-    	string author;
-    	int id;
-    	Book* next;
-    
-    	Book(string name1, string author1, int id1)
-    	{
-    	    name=name1;
-    	    author=author1;
-    	    id=id1;
-    	    next=NULL;
-    	}
+public:
+	string name;
+	string author;
+	int id;
+	int copies;
+	Book* next;
+
+	Book(string name1, string author1, int id1,int copies1)
+	{
+		name=name1;
+		author=author1;
+		id=id1;
+		copies=copies1;
+		next=NULL;
+	}
 };
 
-class Student 
+//////////////////////////////////////////////////////////
+//                    Student Class                     //
+//////////////////////////////////////////////////////////
+class Student
 {
-    public:
-    	string name;
-    	string email;
-    	string book;
-    	string author;
-    	int id;
-    	Student* next;
-    
-    	Student(string name1, string email1, string book1, string author1, int id1)
-    	{
-    		name=name1;
-    		email=email1;
-    		book=book1;
-    		author=author1;
-    		id=id1;
-    		next=NULL;
-    	}
+public:
+	string name;
+	string email;
+	string book;
+	string author;
+	int id;
+	Student* next;
 
+	Student(string name1, string email1, string book1, string author1, int id1)
+	{
+		name=name1;
+		email=email1;
+		book=book1;
+		author=author1;
+		id=id1;
+		next=NULL;
+	}
 };
 
+//////////////////////////////////////////////////////////
+//                LibrarySystem Class                   //
+//////////////////////////////////////////////////////////
 class LibrarySystem 
 {
-    private:
-    	Book* start_lib = nullptr;
-    	Student* start = nullptr;
+private:
+	Book* start_lib = nullptr;
+	Student* start = nullptr;
 
-    public:
-    	void run();
-    	void greetings();
-    	void main_menu();
-    
-    private:
-    	void initialize_lib();
-    	void issue_book();
-    	void return_book();
-    	void display_students();
-    	void delete_book(int);
-    	void add_book(const string&, const string&, int);
+public:
+	void run();
+
+private:
+	// System Interface
+	void greetings();
+	void main_menu();
+
+	// Book/Student Management
+	void initialize_lib();
+	void issue_book();
+	void return_book();
+	void display_students();
+	void display_books(); 
+
+	// Internal Utilities
+	void delete_book(int); 
+	void add_book(const string&, const string&, int, int);
 };
+
+//////////////////////////////////////////////////////////
+//               LibrarySystem Definitions              //
+//////////////////////////////////////////////////////////
 
 void LibrarySystem::run() 
 {
@@ -69,45 +89,45 @@ void LibrarySystem::run()
 
 void LibrarySystem::greetings() 
 {
-	cout << "\n\n";
-	cout << "\t\t\t     ****************************************\n";
-	cout << "\t\t\t     *      WELCOME TO STUDENT LIBRARY      *\n";
-	cout << "\t\t\t     ****************************************\n";
+	cout << "\n\n\t\t****************************************\n";
+	cout << "\t\t*      WELCOME TO STUDENT LIBRARY      *\n";
+	cout << "\t\t****************************************\n";
 }
 
 void LibrarySystem::main_menu() 
 {
 	int choice;
-	do 
-	{
+	do {
 		cout << "\n************** MAIN MENU **************\n";
 		cout << "1. ISSUE BOOK\n";
 		cout << "2. RETURN BOOK\n";
 		cout << "3. DISPLAY STUDENT DETAILS\n";
-		cout << "4. EXIT\n";
+		cout << "4. DISPLAY AVAILABLE BOOKS\n";
+		cout << "5. EXIT\n";
 		cout << "Enter your choice: ";
 		cin >> choice;
 		cin.ignore();
 
 		switch (choice) 
 		{
-    		case 1:
-    			issue_book();
-    			break;
-    		case 2:
-    			return_book();
-    			break;
-    		case 3:
-    			display_students();
-    			break;
-    		case 4:
-    			exit(0);
-    		default:
-    			cout << "\nInvalid option. Try again.";
-    			cin.get();
+		case 1:
+			issue_book();
+			break;
+		case 2:
+			return_book();
+			break;
+		case 3:
+			display_students();
+			break;
+		case 4:
+			display_books();
+			break;
+		case 5:
+			exit(0);
+		default:
+			cout << "\nInvalid option. Try again.\n";
 		}
-	} while (choice != 4);
-
+	} while (choice != 5);
 }
 
 void LibrarySystem::initialize_lib() 
@@ -115,23 +135,36 @@ void LibrarySystem::initialize_lib()
 	string names[] = {"Operating Systems", "Database Management Systems", "Computer Organisation", "Computer Networks", "Engineering Mathematics"};
 	string authors[] = {"Galvin", "Raghu Ramakrishnan", "Morris Mano", "Andrew S.Tanenbaum", "BS Grewel"};
 	int ids[] = {101, 102, 103, 104, 105};
+	int copies[] = {3, 2, 4, 2, 5};
 
-	Book* ptr = nullptr;
+	Book* tail = nullptr;
 	for (int i = 0; i < 5; ++i) 
 	{
-		Book* new_book = new Book(names[i], authors[i], ids[i]);
-		if (!start_lib) 
-		{
+		Book* new_book = new Book(names[i], authors[i], ids[i], copies[i]);
+		if (!start_lib)
 			start_lib = new_book;
-			ptr = new_book;
-		}
-		else 
-		{
-			ptr->next = new_book;
-			ptr = new_book;
-		}
+		else
+			tail->next = new_book;
+		tail = new_book;
+	}
+}
+
+void LibrarySystem::display_books() 
+{
+    
+	if (!start_lib) 
+	{
+		cout << "\nLibrary has no books.\n";
+		return;
 	}
 
+	cout << "\n************** Books In Library **************\n";
+	Book* ptr = start_lib;
+	while (ptr) 
+	{
+		cout << "Book ID: " << ptr->id<< " | " << ptr->name<< " by " << ptr->author<< " | Copies: " << ptr->copies << "\n";
+		ptr = ptr->next;
+	}
 }
 
 void LibrarySystem::issue_book() 
@@ -142,49 +175,42 @@ void LibrarySystem::issue_book()
 		return;
 	}
 
-	Book* ptr = start_lib;
-	cout << "\n*************** Books Available: ****************\n";
-	while (ptr) 
-	{
-		cout << "\nBook ID " << ptr->id << ": " << ptr->name << " by " << ptr->author ;
-		ptr = ptr->next;
-	}
 
 	int id;
-	cout << "\n\nEnter the Book ID to issue: ";
+	cout << "\nEnter the Book ID to issue: ";
 	cin >> id;
 
-	ptr = start_lib;
+	Book* ptr = start_lib;
 	while (ptr && ptr->id != id) ptr = ptr->next;
 
-	if (ptr) 
+	if (ptr && ptr->copies > 0) 
 	{
 		string student_name, student_email;
-		cout << "\nEnter your Name: ";
 		cin.ignore();
+		cout << "\nEnter your Name: ";
 		getline(cin, student_name);
 		cout << "Enter your Email: ";
 		getline(cin, student_email);
 
 		Student* new_student = new Student(student_name, student_email, ptr->name, ptr->author, ptr->id);
 
-		if (!start) 
-		    start = new_student;
+		if (!start)
+			start = new_student;
 		else 
 		{
-			Student* ptr2 = start;
-			while (ptr2->next) ptr2 = ptr2->next;
-			ptr2->next = new_student;
+			Student* s = start;
+			while (s->next) 
+		    	s = s->next;
+			s->next = new_student;
 		}
 
-		delete_book(ptr->id);
+		ptr->copies--; // Just decrement copies
 		cout << "\nBook issued successfully!\n";
 	} 
 	else 
 	{
-		cout << "\nInvalid Book ID. Try again.\n";
+		cout << "\nInvalid Book ID or no copies available.\n";
 	}
-
 }
 
 void LibrarySystem::return_book() 
@@ -200,23 +226,35 @@ void LibrarySystem::return_book()
 	cin >> id;
 
 	Student* ptr = start;
-	Student* preptr = nullptr;
+	Student* prev = nullptr;
 
 	while (ptr && ptr->id != id) 
 	{
-		preptr = ptr;
+		prev = ptr;
 		ptr = ptr->next;
 	}
 
-	if (ptr) 
+	if (ptr)
 	{
-		cout << "\nReturning Book: " << ptr->book << " by " << ptr->author;
-		add_book(ptr->book, ptr->author, ptr->id);
+		// Find the book and increment copies
+		Book* book_ptr = start_lib;
+		while (book_ptr && book_ptr->id != id)
+		    book_ptr = book_ptr->next;
 
-		if (!preptr) 
-		    start = ptr->next;
+		if (book_ptr) 
+		{
+			book_ptr->copies++;
+		} 
 		else 
-		    preptr->next = ptr->next;
+		{
+			// If book doesn't exist (shouldn't happen now), re-add it
+			add_book(ptr->book, ptr->author, ptr->id, 1);
+		}
+
+		if (!prev)
+			start = ptr->next;
+		else
+			prev->next = ptr->next;
 
 		delete ptr;
 		cout << "\nBook returned successfully!\n";
@@ -225,7 +263,6 @@ void LibrarySystem::return_book()
 	{
 		cout << "\nNo record found for the given Book ID.\n";
 	}
-
 }
 
 void LibrarySystem::display_students() 
@@ -235,12 +272,13 @@ void LibrarySystem::display_students()
 		cout << "\nNo student data available.\n";
 		return;
 	}
+
 	Student* ptr = start;
 	while (ptr) 
 	{
-		cout << "\nStudent: " << ptr->name;
-		cout << "\nEmail: " << ptr->email;
-		cout << "\nBook: " << ptr->book << " by " << ptr->author << " (ID: " << ptr->id << ")\n";
+		cout << "\nStudent: " << ptr->name
+		     << "\nEmail: " << ptr->email
+		     << "\nBook: " << ptr->book << " by " << ptr->author << " (ID: " << ptr->id << ")\n";
 		ptr = ptr->next;
 	}
 }
@@ -248,44 +286,55 @@ void LibrarySystem::display_students()
 void LibrarySystem::delete_book(int id) 
 {
 	Book* ptr = start_lib;
-	Book* preptr = nullptr;
+	Book* prev = nullptr;
 
 	while (ptr && ptr->id != id) 
 	{
-		preptr = ptr;
+		prev = ptr;
 		ptr = ptr->next;
 	}
 
-	if (!ptr) 
-	    return;
+	if (!ptr) return;
 
-	if (!preptr) 
-	    start_lib = ptr->next;
-	else 
-	    preptr->next = ptr->next;
+	if (!prev)
+		start_lib = ptr->next;
+	else
+		prev->next = ptr->next;
 
 	delete ptr;
-
 }
 
-void LibrarySystem::add_book(const string& bookname, const string& authorname, int id) 
+void LibrarySystem::add_book(const string& bookname, const string& authorname, int id, int copies)
 {
-	Book* new_book = new Book(bookname, authorname, id);
-	if (!start_lib) 
+	Book* ptr = start_lib;
+	while (ptr)
 	{
-		start_lib = new_book;
+		if (ptr->id == id) 
+		{
+			ptr->copies += copies;
+			return;
+		}
+		ptr = ptr->next;
 	}
+
+	Book* new_book = new Book(bookname, authorname, id, copies);
+	if (!start_lib)
+		start_lib = new_book;
 	else 
 	{
-		Book* ptr = start_lib;
-		while (ptr->next) ptr = ptr->next;
-		ptr->next = new_book;
+		Book* temp = start_lib;
+		while (temp->next) temp = temp->next;
+		temp->next = new_book;
 	}
 }
 
+//////////////////////////////////////////////////////////
+//                       Main                           //
+//////////////////////////////////////////////////////////
 int main() 
 {
 	LibrarySystem lib;
 	lib.run();
 	return 0;
 }
+
